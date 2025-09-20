@@ -1,10 +1,18 @@
 import React from "react";
 
-const Button = ({ buttonText, onClick }) => {
+const Button = ({
+  buttonText,
+  onClick,
+  className,
+  type = "button",
+  disabled,
+}) => {
   return (
     <button
       onClick={onClick}
-      className="bg-gray-300 text-black border p-2 w-full mx-auto my-2"
+      type={type}
+      disabled={disabled}
+      className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow-md ${className}`}
     >
       {buttonText}
     </button>
