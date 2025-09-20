@@ -1,15 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Button from "./button";
+import FormInput from "./FormInput";
+import { DELETE, AMOUNT, DESCRIPTION, INVALID_AMOUNT } from "../constants";
 
-const Popup = ({ popupBtnText, onSubmit, onClose }) => {
+const Popup = ({
+  popupBtnText,
+  onSubmit,
+  onClose,
+  initialValues,
+  onDelete,
+}) => {
   const [amount, setAmount] = useState("");
   const [description, setDescription] = useState("");
   const [error, setError] = useState("");
 
+  // Set initial values when editing
+  useEffect(() => {
+    if (initialValues) {
+      setAmount(initialValues.amount.toString());
+      setDescription(initialValues.description);
+    }
+  }, [initialValues]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (Number(amount) <= 0) {
-      setError("Amount must be greater than 0");
+      setError(INVALID_AMOUNT);
       return;
     }
     setError("");
@@ -34,39 +50,47 @@ const Popup = ({ popupBtnText, onSubmit, onClose }) => {
         </button>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <input
-              type="number"
-              id="amount"
-              value={amount}
-              onChange={handleAmountChange}
-              className="mt-1 block w-full p-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Amount"
-              required
-              min="0"
-              step="0.01"
-            />
-            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-          </div>
+          <FormInput
+            type="number"
+            id="amount"
+            value={amount}
+            onChange={handleAmountChange}
+            placeholder={AMOUNT}
+            required
+            min="0"
+            step="0.01"
+            error={error}
+          />
 
-          <div>
-            <textarea
-              id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              className="mt-1 block w-full p-2 border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-              placeholder="Description"
-              rows="3"
-              required
-            />
-          </div>
+          <FormInput
+            type="text"
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            placeholder={DESCRIPTION}
+            required
+          />
 
-          <div className="flex space-x-3">
+          <div className="space-y-3">
             <Button
               buttonText={popupBtnText}
               type="submit"
-              className="flex-1"
+              className={`w-full ${
+                initialValues?.isCredited
+                  ? "bg-green-500 hover:bg-green-600"
+                  : "bg-red-500 hover:bg-red-600"
+              }`}
             />
+            {onDelete && (
+              <Button
+                buttonText={DELETE}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onDelete();
+                }}
+                className="w-full bg-gray-500 hover:bg-gray-600"
+              />
+            )}
           </div>
         </form>
       </div>

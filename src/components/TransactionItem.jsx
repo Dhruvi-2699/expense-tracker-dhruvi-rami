@@ -1,11 +1,13 @@
 import React from "react";
+import { CURRENCY_SYMBOL, UP_ARROW, DOWN_ARROW } from "../constants";
 
-const TransactionItem = ({ transaction }) => {
+const TransactionItem = ({ transaction, onEdit }) => {
   return (
     <div
       className={`p-3 rounded-lg ${
         transaction.isCredited ? "bg-green-100" : "bg-red-100"
-      }`}
+      } cursor-pointer hover:opacity-90 transition-opacity`}
+      onClick={() => onEdit(transaction)}
     >
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-2">
@@ -14,7 +16,7 @@ const TransactionItem = ({ transaction }) => {
               transaction.isCredited ? "text-green-600" : "text-red-600"
             }`}
           >
-            {transaction.isCredited ? "▲" : "▼"}
+            {transaction.isCredited ? UP_ARROW : DOWN_ARROW}
           </span>
           <div>
             <p className="font-medium">{transaction.description}</p>
@@ -28,7 +30,8 @@ const TransactionItem = ({ transaction }) => {
             transaction.isCredited ? "text-green-600" : "text-red-600"
           }`}
         >
-          ₹{transaction.amount.toFixed(2)}
+          {CURRENCY_SYMBOL}
+          {transaction.amount.toFixed(2)}
         </p>
       </div>
     </div>
